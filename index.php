@@ -258,13 +258,25 @@ if(isset($_GET["Action"]) AND $_GET["Action"]=="mod")
               $oldContentTable->setFetchMode(PDO::FETCH_ASSOC);
 
               $bruteContentOld=$oldContentTable->fetch();
-              //$oldTableVariable=variableNameAndOther($bruteContentOld,'label','name');
 
+              $oldTableVariable=variableNameAndOther(json_encode($bruteContentOld),'label','name');
               $newTableVariable=variableNameAndOther($_POST['dataBrute'],'label','name');
 
-              print_r($bruteContentOld);
-              echo "Et le nouveau";
-              var_dump($newTableVariable);
+              $newVariablesCreated=array_diff($newTableVariable, $oldTableVariable);
+              $oldVariableRemoved =array_diff($oldTableVariable, $newTableVariable);
+              // si il n'y a pas eu de changement de form prenant des valeurs( des inputs)
+              if($newVariablesCreated==null AND $oldVariableRemoved==null){
+
+                $sql = "UPDATE tablestore SET content=$_POST[dataBrute] WHERE libTable='".$_POST['oldTableLib']."'";
+                  // Prepare statement
+                  $stmt = $conn->prepare($sql);
+
+                  // execute the query
+                  $stmt->execute();
+                  echo " Modification effectuée avec success";
+                 
+              }
+
 
               exit();
             }
@@ -276,6 +288,11 @@ if(isset($_GET["Action"]) AND $_GET["Action"]=="mod")
      exit();
 
 }
+
+
+
+
+    
 
 
 
