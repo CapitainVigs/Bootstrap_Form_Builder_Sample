@@ -265,7 +265,8 @@ if(isset($_GET["Action"]) AND $_GET["Action"]=="mod")
               $newVariablesCreated=array_diff($newTableVariable, $oldTableVariable);
               $oldVariableRemoved =array_diff($oldTableVariable, $newTableVariable);
               // si il n'y a pas eu de changement de form prenant des valeurs( des inputs)
-              if($newVariablesCreated==null AND $oldVariableRemoved==null){
+              if($newVariablesCreated==null AND $oldVariableRemoved==null)
+              {
 
                 $sql = "UPDATE tablestore SET content=$_POST[dataBrute] WHERE libTable='".$_POST['oldTableLib']."'";
                   // Prepare statement
@@ -276,6 +277,29 @@ if(isset($_GET["Action"]) AND $_GET["Action"]=="mod")
                   echo " Modification effectuée avec success";
                  
               }
+
+              if($newVariablesCreated!=null AND $oldVariableRemoved==null)
+              {
+
+
+
+                $sql="ALTER TABLE $_POST[oldTableLib] ADD ";
+                foreach ($newVariablesCreated as $colums) {
+                 $sql=$sql.$colums." VARCHAR (100) ,";
+                }
+                $sql=   substr($sql, 0, -1);
+           
+           $sql2 = "UPDATE tablestore SET content=$_POST[dataBrute] WHERE libTable='".$_POST['oldTableLib']."'";
+
+           $stmt1 = $conn->prepare($sql);
+           $stmt2 = $conn->prepare($sql2);
+
+            $stmt1->execute();
+            $stmt2->execute();
+            echo " Modification de column effectuée avec success";
+              }
+
+
 
 
               exit();
