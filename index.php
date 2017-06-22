@@ -300,7 +300,69 @@ if(isset($_GET["Action"]) AND $_GET["Action"]=="mod")
               }
 
 
+              if($newVariablesCreated==null AND $oldVariableRemoved!=null)
+              {
 
+                $sql = "UPDATE tablestore SET content=$_POST[dataBrute] WHERE libTable='".$_POST['oldTableLib']."'";
+                  $stmt = $conn->prepare($sql);
+                  $stmt->execute();
+                  echo " Modification prise en compte";
+              }
+
+              
+              if($newVariablesCreated!=null AND $oldVariableRemoved!=null)
+              {
+                $oldName  =array();
+                $oldLabel =array();
+                $newName  =array();
+                $newLabel =array();
+
+                $updateColumn =array();
+                $addColumn    =array();
+
+                $indexUpdate=array();
+
+                sort($newVariablesCreated);
+                sort($oldVariableRemoved);
+
+               
+
+                foreach ($newVariablesCreated as $variable) {
+                 array_push($newName, substr( $variable, 0,strpos($variable,'_AND_',0)));
+                 array_push($newLabel, substr( $variable, (strpos($variable,'_AND_',0)+5)));
+                }
+
+                foreach ($oldVariableRemoved as $variable) {
+                 array_push($oldName, substr( $variable, 0,strpos($variable,'_AND_',0)));
+                 array_push($oldLabel, substr( $variable, (strpos($variable,'_AND_',0)+5)));
+                }
+
+                foreach ($oldName as $key => $value) {
+                  foreach ($newName as $key2 => $value2) {
+                    if($value2==$value){
+                    array_push($updateColumn, "CHANGE '".$value."_AND_".$oldLabel["$key"]."' '".$value2."_AND_".$newLabel["$key2"]."'");
+                    array_push($indexUpdate, $key2);
+                  }
+                  }
+                  
+                }
+
+                foreach ($newVariablesCreated as $key3 => $value3) {
+                  $stop=0;
+                  foreach ($indexUpdate as $key4 => $value4) {
+                    if($value4==$key3){
+                      $stop=1;
+                      break;
+                    }
+                  }
+                  if($stop==0)
+                      array_push($addColumn, $value3);
+
+                }
+                print_r($updateColumn);
+                print_r($addColumn);
+
+              }
 
               exit();
             }
