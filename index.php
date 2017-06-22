@@ -289,14 +289,14 @@ if(isset($_GET["Action"]) AND $_GET["Action"]=="mod")
                 }
                 $sql=   substr($sql, 0, -1);
            
-           $sql2 = "UPDATE tablestore SET content=$_POST[dataBrute] WHERE libTable='".$_POST['oldTableLib']."'";
+                $sql2 = "UPDATE tablestore SET content=$_POST[dataBrute] WHERE libTable='".$_POST['oldTableLib']."'";
 
-           $stmt1 = $conn->prepare($sql);
-           $stmt2 = $conn->prepare($sql2);
+                $stmt1 = $conn->prepare($sql);
+                $stmt2 = $conn->prepare($sql2);
 
-            $stmt1->execute();
-            $stmt2->execute();
-            echo " Modification de column effectuée avec success";
+                $stmt1->execute();
+                $stmt2->execute();
+                echo " Modification de column effectuée avec success";
               }
 
 
